@@ -1,0 +1,3 @@
+interface MangaRecommendationsMeta {
+    lastUpdatedDate: Date;
+}
