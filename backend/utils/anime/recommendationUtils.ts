@@ -1,23 +1,23 @@
 import { ApiResponseData, Recommendation, Entry } from "../../schemas/api/jikan/recommendations";
-import { MangaRecommendation, MangaRecommendationsMeta } from "../../schemas/db/manga-recommendations";
+import { AnimeRecommendation, AnimeRecommendationsMeta } from "../../schemas/db/anime-recommendations";
 import { getConnection, query } from '../../config/dbConfig';
 import { PoolConnection } from 'mysql2/promise';
 
 /*
-Methods For Managing Manga Recommendations Metadata (Database).
+Methods For Managing Anime Recommendations Metadata (Database).
 */
 
-async function getRecommendationsMetaFromDb(): Promise<MangaRecommendationsMeta> {
+async function getRecommendationsMetaFromDb(): Promise<AnimeRecommendationsMeta> {
     let connection: PoolConnection | undefined;
     try {
         // Get a connection from the pool
         connection = await getConnection();
         
         // Execute the query
-        const [rows] = await query(connection, 'SELECT last_updated_date FROM recommendations_meta WHERE id = 1');
+        const [rows] = await query(connection, 'SELECT last_updated_date FROM anime_recommendations_meta WHERE id = 1');
         const row = rows[0] as { last_updated_date: Date };
         
-        // Return the data as MangaRecommendationsMeta
+        // Return the data as AnimeRecommendationsMeta
         return { lastUpdatedDate: new Date(row.last_updated_date) };
     } catch (error) {
         console.error('Error fetching recommendations meta:', error);
@@ -30,14 +30,14 @@ async function getRecommendationsMetaFromDb(): Promise<MangaRecommendationsMeta>
     }
 }
 
-async function updateRecommendationsMetaInDb(meta: MangaRecommendationsMeta): Promise<void> {
+async function updateRecommendationsMetaInDb(meta: AnimeRecommendationsMeta): Promise<void> {
     let connection: PoolConnection | undefined;
     try {
         // Get a connection from the pool
         connection = await getConnection();
 
         // Execute the query
-        await query(connection, 'UPDATE recommendations_meta SET last_updated_date = ? WHERE id = 1', [meta.lastUpdatedDate]);
+        await query(connection, 'UPDATE anime_recommendations_meta SET last_updated_date = ? WHERE id = 1', [meta.lastUpdatedDate]);
     } catch (error) {
         // Handle error and log it
         console.error('Error updating recommendations meta:', error);
@@ -54,17 +54,17 @@ async function updateRecommendationsMetaInDb(meta: MangaRecommendationsMeta): Pr
 Methods For Managing Recommendations Data (Database)
 */
 
-async function getRecommendationsFromDb(): Promise<MangaRecommendation[]> {
+async function getRecommendationsFromDb(): Promise<AnimeRecommendation[]> {
     let connection: PoolConnection | undefined;
     try {
         // Get a connection from the pool
         connection = await getConnection();
 
         // Execute the query
-        const [rows] = await query(connection, 'SELECT title, url, image, content FROM manga_recommendations');
+        const [rows] = await query(connection, 'SELECT title, url, image, content FROM anime_recommendations');
         
-        // Cast and return the data as MangaRecommendation[]
-        return rows as MangaRecommendation[];
+        // Cast and return the data as AnimeRecommendation[]
+        return rows as AnimeRecommendation[];
     } catch (error) {
         // Handle the error and log it
         console.error('Error fetching recommendations data:', error);
@@ -77,17 +77,17 @@ async function getRecommendationsFromDb(): Promise<MangaRecommendation[]> {
     }
 }
 
-async function updateRecommendationsInDb(recommendations: MangaRecommendation[]): Promise<void> {
+async function updateRecommendationsInDb(recommendations: AnimeRecommendation[]): Promise<void> {
     let connection: PoolConnection | undefined;
     try {
         // Get a connection from the pool
         connection = await getConnection();
         
         // Clear existing recommendations
-        await query(connection, 'TRUNCATE TABLE manga_recommendations');
+        await query(connection, 'TRUNCATE TABLE anime_recommendations');
           
         // Insert new recommendations
-        const insertQuery = 'INSERT INTO manga_recommendations (title, url, image, content) VALUES ?';
+        const insertQuery = 'INSERT INTO anime_recommendations (title, url, image, content) VALUES ?';
         const uniqueRecommendations = removeDuplicates(recommendations);
         const values = uniqueRecommendations.map(rec => [rec.title, rec.url, rec.image, rec.content]);
         await query(connection, insertQuery, [values]);
@@ -103,11 +103,11 @@ async function updateRecommendationsInDb(recommendations: MangaRecommendation[])
 }
 
 /*
-Manga Recommendation Data Handling Utils
+Anime Recommendation Data Handling Utils
 */
 
-// Function to transform API response data to MangaRecommendation[]
-function transformToMangaRecommendations(apiResponse: ApiResponseData): MangaRecommendation[] {
+// Function to transform API response data to AnimeRecommendation[]
+function transformToAnimeRecommendations(apiResponse: ApiResponseData): AnimeRecommendation[] {
     // Extract recommendations from the API response
     return apiResponse.data.flatMap((recommendation: Recommendation) =>
         recommendation.entry.map((entry: Entry) => ({
@@ -120,7 +120,7 @@ function transformToMangaRecommendations(apiResponse: ApiResponseData): MangaRec
 }
 
 // Function to remove duplicate recommendations based on URL
-function removeDuplicates(recommendations: MangaRecommendation[]): MangaRecommendation[] {
+function removeDuplicates(recommendations: AnimeRecommendation[]): AnimeRecommendation[] {
     const seenUrls = new Set<string>();
     return recommendations.filter((rec) => {
         if (seenUrls.has(rec.url)) {
@@ -132,4 +132,4 @@ function removeDuplicates(recommendations: MangaRecommendation[]): MangaRecommen
     });
 }
 
-export { getRecommendationsMetaFromDb, updateRecommendationsMetaInDb, getRecommendationsFromDb, updateRecommendationsInDb, transformToMangaRecommendations };
+export { getRecommendationsMetaFromDb, updateRecommendationsMetaInDb, getRecommendationsFromDb, updateRecommendationsInDb, transformToAnimeRecommendations };

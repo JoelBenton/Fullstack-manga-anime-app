@@ -7,5 +7,7 @@ const apiController = require('../controllers/apiController');
 
 // Define your routes
 router.post('/mangaRecommendations', apiController.mangaRecommendations);
+router.post('/animeRecommendations', apiController.animeRecommendations);
+
 
 module.exports = router;

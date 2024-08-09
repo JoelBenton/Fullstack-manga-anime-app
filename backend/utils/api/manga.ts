@@ -1,4 +1,4 @@
-import { ApiResponseData } from "../../schemas/api/jikan/manga-recommendations";
+import { ApiResponseData } from "../../schemas/api/jikan/recommendations";
 import { callApi } from "../api/apiManager";
 
 async function getMangaRecommendations(): Promise<ApiResponseData> {

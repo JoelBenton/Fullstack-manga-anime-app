@@ -1,18 +1,18 @@
 import { ApiResponseData } from "../../schemas/api/jikan/recommendations";
-import { MangaRecommendation } from "../../schemas/db/manga-recommendations";
-import { getMangaRecommendations } from "../api/manga";
-import { getRecommendationsMetaFromDb, updateRecommendationsInDb, updateRecommendationsMetaInDb, getRecommendationsFromDb, transformToMangaRecommendations} from "./recommendationUtils";
+import { AnimeRecommendation } from "../../schemas/db/anime-recommendations";
+import { getAnimeRecommendations } from "../api/anime";
+import { getRecommendationsMetaFromDb, updateRecommendationsInDb, updateRecommendationsMetaInDb, getRecommendationsFromDb, transformToAnimeRecommendations} from "./recommendationUtils";
 
-async function getRecommendationsManga(): Promise<MangaRecommendation[]> {
+async function getRecommendationsAnime(): Promise<AnimeRecommendation[]> {
   const meta = await getRecommendationsMetaFromDb();
 
   const shouldUpdate = isUpdateNeeded(meta.lastUpdatedDate);
 
   if (shouldUpdate) {
     // Fetch new data from API
-    const newRecommendations: ApiResponseData = await getMangaRecommendations();
+    const newRecommendations: ApiResponseData = await getAnimeRecommendations();
 
-    const formattedRecommendations: MangaRecommendation[] = transformToMangaRecommendations(newRecommendations)
+    const formattedRecommendations: AnimeRecommendation[] = transformToAnimeRecommendations(newRecommendations)
     // Update database with new recommendations
     await updateRecommendationsInDb(formattedRecommendations);
     // Update the last updated timestamp
@@ -33,4 +33,4 @@ function isUpdateNeeded(lastUpdatedDate: Date): boolean {
   return (now.getTime() - lastUpdatedDate.getTime()) > oneDayInMs;
 }
 
-export {getRecommendationsManga}
+export { getRecommendationsAnime }
