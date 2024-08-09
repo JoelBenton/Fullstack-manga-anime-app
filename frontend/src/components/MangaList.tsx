@@ -4,7 +4,7 @@ import { MangaListProps } from '../Schema/Manga';
 
 const MangaList: React.FC<MangaListProps> = ({ recommendations, loading, error }) => {
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <ActivityIndicator size="large" color="#6200ee" />;
   }
 
   if (error) {
@@ -35,28 +35,27 @@ const MangaList: React.FC<MangaListProps> = ({ recommendations, loading, error }
   );
 };
 
-
 const styles = StyleSheet.create({
   itemContainer: {
-    flexDirection: 'row', // Arrange children horizontally
-    alignItems: 'center', // Center items vertically
-    padding: 10,
-    marginBottom: 10,
-    backgroundColor: 'gray',
-    borderRadius: 10,
-    borderColor: 'black',
-    borderWidth: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    marginBottom: 12,
+    backgroundColor: '#3A3A3A',
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#6200ee',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 3,
   },
   image: {
-    width: 80,
-    height: 120,
+    width: 90,
+    height: 140,
     borderRadius: 10,
-    marginRight: 10,
+    marginRight: 12,
   },
   textContainer: {
     flex: 1,
@@ -64,9 +63,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 5,
-    color: 'white'
+    fontSize: 18,
+    marginBottom: 6,
+    color: '#ffffff',
   },
   content: {
     fontSize: 14,

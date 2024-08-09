@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Button } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import MangaList from '../components/MangaList';
 import AnimeList from '../components/AnimeList';
 import { useFetchMangaRecommendations, useFetchAnimeRecommendations } from '../hooks/useFetchRecomendations';
@@ -8,7 +8,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const HomeScreen: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<'Manga' | 'Anime'>('Manga');
 
-  // Fetch data based on selected category
   const { recommendations: mangaRecommendations, loading: mangaLoading, error: mangaError } = useFetchMangaRecommendations();
   const { recommendations: animeRecommendations, loading: animeLoading, error: animeError } = useFetchAnimeRecommendations();
 
@@ -18,21 +17,21 @@ const HomeScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Category Selection Buttons */}
       <View style={styles.buttonContainer}>
-        <Button
-          title="Manga"
+        <TouchableOpacity
+          style={[styles.button, selectedCategory === 'Manga' && styles.selectedButton]}
           onPress={() => handleCategoryChange('Manga')}
-          color={selectedCategory === 'Manga' ? '#6200ee' : '#000'}
-        />
-        <Button
-          title="Anime"
+        >
+          <Text style={styles.buttonText}>Manga</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, selectedCategory === 'Anime' && styles.selectedButton]}
           onPress={() => handleCategoryChange('Anime')}
-          color={selectedCategory === 'Anime' ? '#6200ee' : '#000'}
-        />
+        >
+          <Text style={styles.buttonText}>Anime</Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Conditionally render MangaList or AnimeList based on selected category */}
       {selectedCategory === 'Manga' ? (
         <MangaList recommendations={mangaRecommendations} loading={mangaLoading} error={mangaError} />
       ) : (
@@ -46,11 +45,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: '#f2f2f2',
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 16,
+  },
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    backgroundColor: '#000',
+  },
+  selectedButton: {
+    backgroundColor: '#6200ee',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 
